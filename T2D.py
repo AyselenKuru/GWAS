@@ -37,6 +37,6 @@ def fetch_gene_variants(gene_name):
         print(response.text)
 
 if __name__ == '__main__':
-  #  gene_name = input('Enter the gene name: ')
-    gene_name="HBS1L"
+    gene_name = input('Enter the gene name: ')
+   # gene_name="HBS1L"
     fetch_gene_variants(gene_name)
