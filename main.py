@@ -75,6 +75,7 @@ if __name__ == '__main__':
     gene_name = input('Enter the gene name: ')
    # gene_name="SLC30A8"
     fetch_gene_variants(gene_name)
+    query_gwas_by_gene(gene_name)
     with open('GWAS.json', 'r') as f:
         json_data = json.load(f)
     list = extract_rsIds(json_data)
