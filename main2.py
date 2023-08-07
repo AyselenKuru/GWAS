@@ -74,8 +74,8 @@ def extract_rsId(data):
     return unique_rs_ids
 
 if __name__ == '__main__':
-   # gene_name = input('Enter the gene name: ')
-    gene_name="SLC30A8"
+    gene_name = input('Enter the gene name: ')
+   # gene_name="SLC30A8"
     fetch_gene_variants(gene_name)
     file_name = f'{gene_name}_variants.json'
     t2d_rsIds = extract_dbSNPs(file_name)
