@@ -20,7 +20,7 @@ def t2d(gene_name):
     prefs = {"download.default_directory": download_directory}
     chrome_options.add_experimental_option("prefs", prefs)
 
-    # Create the driver with configured options
+    # Create the driver with configured options change this accordingly
     driver = webdriver.Chrome(
         executable_path=r"C:\Users\kurua\Desktop\chromedriver-win64\chromedriver-win64\chromedriver.exe",
         options=chrome_options)
@@ -107,10 +107,11 @@ def extract_dbSNPs():
     return  lead_dbSNPs
 
 if __name__ == '__main__':
-    gene_name = "SLC30A8"
+    gene_name = input('Enter the gene name: ')
+    #gene_name = "SLC30A8"
     t2d(gene_name)
     t2d_rsIds = extract_dbSNPs()
-   # gene_name = input('Enter the gene name: ')
+
     table = "associations"  # Change this to "studies" or "traits" as needed
     gwas_variant_search(table, gene_name)
 
