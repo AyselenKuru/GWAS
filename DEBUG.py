@@ -37,7 +37,7 @@ def t2d(gene_name):
 
     download_button = driver.find_element("xpath","//button[contains(text(), 'Download')]")
     download_button.click()
-    time.sleep(3)
+    time.sleep(8)
 
     json_option = driver.find_element("xpath","//a[contains(text(), 'CSV')]")
     json_option.click()
@@ -55,11 +55,13 @@ def t2d(gene_name):
     os.rename(original_file_path, new_file_path)
     # Close the browser
     driver.quit()
+
+
 def gwas_variant_search(table, gene):
     session = requests.Session()
     base_url = "https://www.ebi.ac.uk/gwas/"
     download_url = f"{base_url}api/v2/genes/{gene}/{table}/download"
-    download_directory="downloaded_files\\"
+    download_directory="downloaded_files/"
     try:
         response = session.get(download_url)
         response.raise_for_status()
@@ -70,12 +72,12 @@ def gwas_variant_search(table, gene):
         with open(file_path, "wb") as file:
             file.write(response.content)
 
-        print(f"File '{filename}' downloaded to '{download_directory}' successfully")
+        #print(f"File '{filename}' downloaded to '{download_directory}' successfully")
     except requests.exceptions.RequestException as e:
         print("Error downloading file:", e)
 
-id_phen_gwas={}
 
+id_phen_gwas={}
 def extract_rsId(data):
     #GWAS
     rs_id_list = []
@@ -106,35 +108,7 @@ def extract_rsId(data):
 
     unique_rs_ids = list(set(rs_id_list))
     return unique_rs_ids
-
-id_phen={}
 id_phen_t2d={}
-def extract_dbSNPs():
-    # T2D
-    csv_file_path = f"downloaded_files/{gene_name}.csv"  # Replace with the path to your CSV file
-    lead_dbSNPs = []
-
-    with open(csv_file_path, "r", newline="") as file:
-        next(file)
-
-        for row in file:
-            splitted = row.split(",")
-            lead_snp = splitted[splitted.__len__()-6].strip('"')
-            phen= splitted[splitted.__len__()-2].strip('"')
-            pval=splitted[splitted.__len__()-19].strip('"')
-            tup=(phen,pval)
-            lead_dbSNPs.append(lead_snp)
-            if id_phen_t2d.__contains__(lead_snp):
-               id_phen_t2d.get(lead_snp).append(tup)
-
-            else:
-                insert = []
-                insert.append(tup)
-                id_phen_t2d[lead_snp] =insert
-
-
-    return  list(set(lead_dbSNPs))
-
 def extract_dbSNPs():
     # T2D
     csv_file_path = f"downloaded_files/{gene_name}.csv"  # Replace with the path to your CSV file
@@ -196,12 +170,10 @@ if __name__ == '__main__':
             print(rs)
 
 
-# Define your data structures (id_phen_gwas, id_phen_t2d, gwas_rsIds, t2d_rsIds) here
 
-# Open "results.txt" in write mode (which will create the file if it doesn't exist or overwrite its content)
+file=f"results{gene_name}.txt"
 with open(f"results{gene_name}.txt", "w") as file:
     file.write("GWAS RESULTS\n")
-    file.write('Trait\tP_value\n')
     for id in id_phen_gwas:
         inserted = id_phen_gwas.get(id)
         for elem in inserted:
@@ -209,7 +181,6 @@ with open(f"results{gene_name}.txt", "w") as file:
 
     file.write("\n\n")
     file.write("T2D Knowledge Portal Results\n")
-    file.write('Trait\tP_value\n')
     for id in id_phen_t2d:
         inserted = id_phen_t2d.get(id)
         for elem in inserted:
@@ -220,7 +191,7 @@ with open(f"results{gene_name}.txt", "w") as file:
     for rs in gwas_rsIds:
         if rs in t2d_rsIds:
             pheno = id_phen_t2d[rs]
-            file.write(rs  + "\n")
+            file.write(rs +"\n")
 
 print("Data has been written to results.txt.")
 
